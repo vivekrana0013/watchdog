@@ -1,0 +1,78 @@
+{% extends 'core/base.html' %}{% block title %}Report incident{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+<main id="main" class="main">
+    <section class="section dashboard">
+        <div class="row">
+            <div class="col-md-8 col-lg-8 offset-sm-2">
+                {% include 'toasts.html' %}
+                <div class="card info-card">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="bi-mic-fill"></i> Report incident</h5>
+                        <form hx-post="{% url 'report_incident' %}" hx-indicator="#indicator" hx-trigger="submit" hx-target="#wrapper" hx-swap="outerHTML">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="col-12">
+                                        <div class="form-wizard text-center">
+                                            <p class="small fst-italic">
+                                                {% if wizard.steps.step1 == 1 %}
+                                                Fill all form field to go next step
+                                                {% else %}
+                                                One final step!
+                                                {% endif %}
+                                            </p>
+                                            <ul class="list-unstyled form-wizard-steps clearfix">
+                                                {% if wizard.steps.step1 == 1 %}
+                                                <li class="active">
+                                                    <span>{% if wizard.steps.step1 == 1 %}{{ wizard.steps.step1 }}{% else %} <i class="bi-check-circle-fill" style="font-size: 32px;"></i> {% endif %}</span>
+                                                </li>
+                                                <li>
+                                                    <span>{% if wizard.steps.step1 == 2 %}{{ wizard.steps.step1 }}{% else %}{{ wizard.steps.count }}{% endif %}</span>
+                                                </li>
+                                                {% else %}
+                                                <li class="active">
+                                                    <span>{% if wizard.steps.step1 == 1 %}{{ wizard.steps.step1 }}{% else %} <i class="bi-check-circle-fill" style="font-size: 32px;"></i> {% endif %}</span>
+                                                </li>
+                                                <li class="active">
+                                                    <span>{% if wizard.steps.step1 == 2 %}{{ wizard.steps.step1 }}{% else %}{{ wizard.steps.count }}{% endif %}</span>
+                                                </li>
+                                                {% endif %}
+                                            </ul>
+                                        </div>
+                                        {{ wizard.management_form }}
+                                        {% if wizard.form.forms %}
+                                            {{ wizard.form.management_form }}
+                                            {% for form in wizard.form.forms %}
+                                                {{ form|crispy }}
+                                            {% endfor %}
+                                        {% else %}
+                                            {{ wizard.form|crispy }}
+                                        {% endif %}
+                                        <hr>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            {% if wizard.steps.prev %}
+                                                    <button class="btn btn-sm btn-outline-secondary" name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">Back</button>
+                                            {% endif %}
+                                            {% if wizard.steps.next %}
+                                            <button type="submit" class="btn btn-outline-success">Next</button>
+                                            {% else %}
+                                            <button type="submit" class="btn btn-outline-success w-25">
+                                                Submit
+                                                <span id="indicator" class="htmx-indicator spinner-border spinner-border-sm"></span>
+                                            </button>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% include 'footer.html' %}
+</main>
+{% endblock %}

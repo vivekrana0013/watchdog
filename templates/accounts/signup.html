@@ -1,0 +1,103 @@
+{% load static %}
+{% load widget_tweaks %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="icon" href="{% static 'img/favicon/favicon.png' %}">
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+	<title>Safeguard &centerdot; Signup</title>
+</head>
+<body>
+	<main id="auth-main">
+		<div class="container">
+			<section class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
+				<div class="container">
+					<div class="row justify-content-center">
+						<div class="col-md-7 col-lg-7 d-flex flex-column align-items-center justify-content-center">
+							{% include 'toasts.html' %}
+							<div class="card mb-3">
+								<div class="card-body">
+									<div class="pt-4 pb-2">
+										<h5 class="card-title text-center pb-0 fs-4">Create an account</h5>
+									</div>
+									<form action="" method="post" class="row g-3" autocomplete="off">
+										{% csrf_token %}
+										<div class="col-12">
+											<label>{{ SignupForm.username.label_tag }}&ast;</label>
+											{{ SignupForm.username.errors }}
+											{% render_field SignupForm.username class="form-control" hx-post="/auth/validate-username/" hx-swap="outerhtml" hx-trigger="keyup delay:.5s" hx-target="#username-error" %}
+                                            {{ SignupForm.username.help_text }}
+											<div id="username-error"></div>
+
+											<label>{{ SignupForm.email.label_tag }}&ast;</label>
+											{{ SignupForm.email.errors }}
+											{% render_field SignupForm.email class="form-control" hx-post="/auth/validate-email/" hx-swap="outerhtml" hx-trigger="keyup delay:.5s" hx-target="#email-error" %}
+											<div id="email-error"></div>
+
+											<label>{{ SignupForm.mobile_no.label_tag }}&ast;</label>
+											{{ SignupForm.mobile_no.errors }}
+											{% render_field SignupForm.mobile_no class="form-control" hx-post="/auth/validate-mobile/" hx-swap="outerhtml" hx-trigger="keyup delay:.5s" hx-target="#mobile-number-error" %}
+                                            <p class="small text-muted">{{ SignupForm.mobile_no.help_text }}</p>
+                                            <div id="mobile-number-error"></div>
+
+											<label>{{ SignupForm.gender.label_tag }}&ast;</label>
+											{% render_field SignupForm.gender class="form-control" %}
+
+											<label>{{ SignupForm.dob.label_tag }}&ast;</label>
+											{{ SignupForm.dob.errors }}
+											{% render_field SignupForm.dob class="form-control" hx-post="/auth/validate-age/" hx-swap="outerhtml" hx-trigger="keyup delay:.2s" hx-target="#age-error" %}
+                                            <p class="small text-muted">{{ SignupForm.dob.help_text }}</p>
+											<div id="age-error"></div>
+
+											<label>{{ SignupForm.password1.label_tag }}&ast;</label>
+											{{ SignupForm.password1.errors }}
+											{% render_field SignupForm.password1 class="form-control" hx-post="/auth/check-password/" hx-swap="outerhtml" hx-trigger="keyup delay:.5s" hx-target="#password-1-error" %}
+                                            <p class="small text-muted">
+                                                <ul class="text-muted">
+                                                    <li class="list-group-item">Your password can’t be too similar to your other personal information.</li>
+                                                    <li class="list-group-item">Your password must contain at least 8 characters.</li>
+                                                    <li class="list-group-item">Your password can’t be a commonly used password.</li>
+                                                    <li class="list-group-item">Your password can’t be entirely numeric.</li>
+                                                </ul>
+                                            </p>
+                                            <div id="password-1-error"></div>
+
+											<label>{{ SignupForm.password2.label_tag }}&ast;</label>
+											{{ SignupForm.password2.errors }}
+											{% render_field SignupForm.password2 class="form-control" hx-post="/auth/check-password/" hx-swap="outerhtml" hx-trigger="keyup delay:.5s" hx-target="#password-2-error"  %}
+                                            <p class="small text-muted">{{ SignupForm.password2.help_text }}</p>
+											<div id="password-2-error"></div>
+											<hr class="mb-0">
+										</div>
+										<div class="col-12">
+											<button class="btn btn-outline-success w-100" type="submit">Signup</button>
+										</div>
+										<div class="col-12 text-center">
+											<p class="small mb-0">Already registered? <a href="{% url 'login' %}">Login</a></p>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+		</div>
+		{% include 'footer.html' %}
+	</main>
+	<div id="preloader"></div>
+    <a href="" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'js/toasts.js' %}"></script>
+</body>
+</html>

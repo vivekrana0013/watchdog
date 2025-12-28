@@ -1,0 +1,121 @@
+{% extends 'core/base.html' %}{% block title %}Profile page{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %}{% load widget_tweaks %}
+	{% block content %}
+	<main id="main" class="main">
+		<section class="section profile">
+			<div class="row">
+				<div class="col-xl-4">
+					<div class="card">
+						<div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
+							<img src="{{ request.user.profile_pic.url }}" alt="Profile" class="rounded-circle">
+							<h2>{{ request.user.username|title }}</h2>
+							<h3>{{ request.user.age }} years | {{ request.user.gender|default:" -- " }}</h3>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-xl-8">
+					{% include 'toasts.html' %}
+					<div class="card">
+						<div class="card-body pt-3">
+							<ul class="nav nav-tabs nav-tabs-bordered">
+								<li class="nav-item">
+									<button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview">Overview</button>
+								</li>
+								<li class="nav-item">
+									<button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit">Edit profile</button>
+								</li>
+								<li class="nav-item">
+									<button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-change-password">Change Password</button>
+								</li>
+							</ul>
+							<div class="tab-content pt-2">
+								<div class="tab-pane fade show active profile-overview" id="profile-overview">
+									<h5 class="card-title">Profile Details</h5>
+									<div class="row">
+										<div class="col-xl-3 col-lg-4 label">Full Name</div>
+										<div class="col-xl-9 col-lg-8">{{ request.user.first_name|title|default:" -- " }} {{ request.user.last_name|title }}</div>
+									</div>
+									<div class="row">
+										<div class="col-xl-3 col-lg-4 label">Gender</div>
+										<div class="col-xl-9 col-lg-8">{{ request.user.gender|default:" -- " }}</div>
+									</div>
+									<div class="row">
+										<div class="col-xl-3 col-lg-4 label">DoB</div>
+										<div class="col-xl-9 col-lg-8">{{ request.user.dob|default:" -- " }}</div>
+									</div>
+									<div class="row">
+										<div class="col-xl-3 col-lg-4 label">Age</div>
+										<div class="col-xl-9 col-lg-8">{{ request.user.age|default:"0" }}</div>
+									</div>
+									<div class="row">
+										<div class="col-xl-3 col-lg-4 label">Mobile Number</div>
+										<div class="col-xl-9 col-lg-8">{{ request.user.mobile_no|default:" -- " }}</div>
+									</div>
+									<div class="row">
+										<div class="col-xl-3 col-lg-4 label">County</div>
+										<div class="col-xl-9 col-lg-8">{{ request.user.county|default:" -- " }}</div>
+									</div>
+									<div class="row">
+										<div class="col-xl-3 col-lg-4 label">Sub county</div>
+										<div class="col-xl-9 col-lg-8">{{ request.user.sub_county|default:" -- " }}</div>
+									</div>
+								</div>
+								
+								<div class="tab-pane fade profile-edit pt-3" id="profile-edit">
+									<form hx-post="{% url 'user_profile' %}" hx-trigger="submit" hx-swap="outerHTML" hx-target="#wrapper" enctype="multipart/form-data">
+										{% csrf_token %}
+										<div class="row mb-3">
+											<label for="image" class="col-md-4 col-lg-3 col-form-label">Profile Image</label>
+											<div class="col-md-8 col-lg-9">
+												<img src="{{ request.user.profile_pic.url }}" alt="Profile">
+											</div>
+										</div>
+										<div class="row mb-2">
+											<div class="col-xl-12 col-lg-12">
+												{{ EditProfileForm|crispy }}
+												<hr>
+											</div>
+										</div>
+										<div class="text-center d-grid gap-2">
+											<button type="submit" class="btn btn-outline-primary">Save Changes</button>
+										</div>
+									</form>
+								</div>
+
+								<div class="tab-pane fade pt-3" id="profile-change-password">
+									<form action="" method="post">
+										{% csrf_token %}
+										<div class="row mb-3">
+											<div class="col-md-12 col-lg-12">
+												<label>{{ ChangePasswordForm.old_password.label }}&ast;</label>
+												{% render_field ChangePasswordForm.old_password class="form-control" hx-post="/auth/validate-password/" hx-swap="outerhtml" hx-trigger="keyup delay:.5s" hx-target="#old-password-error" %}
+												<div class="text-danger fw-bold">{{ ChangePasswordForm.old_password.errors }}</div>
+												<div id="old-password-error"></div>
+												<label>{{ ChangePasswordForm.new_password1.label }}&ast;</label>
+												{% render_field ChangePasswordForm.new_password1 class="form-control" hx-post="/auth/check-password/" hx-swap="outerhtml" hx-trigger="keyup delay:.5s" hx-target="#new-password-error" %}
+												{{ ChangePasswordForm.new_password1.help_text }}
+												<div class="text-danger fw-bold">{{ ChangePasswordForm.new_password1.errors }}</div>
+												<div id="new-password-error"></div>
+												<label>{{ ChangePasswordForm.new_password2.label }}&ast;</label>
+												{% render_field ChangePasswordForm.new_password2 class="form-control" hx-post="/auth/check-password/" hx-swap="outerhtml" hx-trigger="keyup delay:.5s" hx-target="#confirm-password-error" %}
+												<div class="text-danger fw-bold">{{ ChangePasswordForm.new_password2.errors }}</div>
+												<div id="confirm-password-error"></div>
+											</div>
+										</div>
+
+										<div class="d-grid gap-2 text-center">
+											<button type="submit" class="btn btn-primary">Change Password</button>
+										</div>
+									</form>
+
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	</main>
+	{% endblock %}

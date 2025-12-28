@@ -1,0 +1,10 @@
+{% extends 'core/base.html' %}{% block title %}Homepage{% endblock %}
+{% load static %}
+{% block content %}
+	{% include 'toasts.html' %}
+	{% if request.user.is_officer is True %}
+		{% include 'core/partials/officers/dashboard.html' %}
+	{% else %}
+		{% include 'core/partials/users/dashboard.html' %}
+	{% endif %}
+{% endblock %}

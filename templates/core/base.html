@@ -1,0 +1,106 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=0">
+    <link href="{% static 'img/favicon/favicon.png' %}" rel="icon">
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+    <link href="{% static 'vendor/aos/aos.css' %}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.0/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.0/dist/MarkerCluster.Default.css" />
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.0/dist/leaflet.markercluster.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.heat@0.2.0/dist/leaflet-heat.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="{% static 'vendor/simple-datatables/style.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <title>Watchdog &centerdot; {% block title %}{% endblock %}</title>
+</head>
+<body>
+    <div id="wrapper" class="wrapper">
+        <aside id="sidebar">
+            <div class="d-flex">
+                <button class="toggle-sidebar-btn" type="button" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Click to toggle side menu">
+                    <img src="{% static 'img/logo.png' %}" height="30px" alt="logo">
+                </button>
+                <div class="sidebar-logo">
+                    <a href="{% url 'homepage' %}">Watchdog</a>
+                </div>
+            </div>
+            <ul class="sidebar-nav">
+                <li class="sidebar-item">
+                    <a hx-get="{% url 'homepage' %}" hx-trigger="click" hx-push-url="{% url 'homepage' %}" hx-swap="outerHTML" hx-target="#wrapper" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Homepage" class="sidebar-link">
+                        <i class="bi-house-fill"></i>
+                        <span>Homepage</span>
+                    </a>
+                </li>
+                {% if request.user.is_officer is False %}
+                <li class="sidebar-item">
+                    <a hx-get="{% url 'report_incident' %}" hx-trigger="click" hx-push-url="{% url 'report_incident' %}" hx-swap="outerHTML" hx-target="#wrapper" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Report incident" class="sidebar-link">
+                        <i class="bi-mic-fill"></i>
+                        <span>Report incident</span>
+                    </a>
+                </li>
+                {% endif %}
+                {% if request.user.is_officer is True %}
+                <li class="sidebar-item">
+                    <a hx-get="{% url 'wanted_suspects' %}" hx-trigger="click" hx-push-url="{% url 'wanted_suspects' %}" hx-target="#wrapper" hx-swap="outerHTML" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Wanted suspects" class="sidebar-link">
+                        <i class="bi-person-fill-exclamation"></i>
+                        <span>Wanted suspects</span>
+                    </a>
+                </li>
+                {% endif %}
+                <li class="sidebar-item">
+                    <a hx-get="{% url 'reported_incidents' %}" hx-trigger="click" hx-push-url="{% url 'reported_incidents' %}" hx-swap="outerHTML" hx-target="#wrapper" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Reported incidents" class="sidebar-link">
+                        <i class="bi-clipboard-data-fill"></i>
+                        <span>Reported incidents</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a  hx-get="{% url 'geo_map' %}" hx-trigger="click" hx-push-url="{% url 'geo_map' %}" hx-target="#wrapper"  hx-swap="outerHTML"  data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Map" class="sidebar-link">
+                        <i class="bi-geo-alt-fill"></i>
+                        <span>Map</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a hx-get="{% url 'notifications' %}" hx-trigger="click" hx-push-url="{% url 'notifications' %}" hx-target="#wrapper" hx-swap="outerHTML" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Notifications" class="sidebar-link">
+                        <i class="bi-bell-fill">{% if TotalNotifications %}<span class="badge">{{ TotalNotifications }}</span>{% endif %}</i>
+                        <span>Notifications</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a hx-get="{% url 'user_profile' %}" hx-trigger="click" hx-push-url="{% url 'user_profile' %}" hx-target="#wrapper" hx-swap="outerHTML" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Profile" class="sidebar-link">
+                        <img src="{{ request.user.profile_pic.url }}" height="30px" width="30px" alt="profile" class="rounded-circle">
+                        <span>Profile</span>
+                    </a>
+                </li>
+            </ul>
+            <div class="sidebar-footer">
+                <a hx-post="{% url 'logout_user' %}" hx-trigger="click" hx-swap="outerHTML" hx-push-url="{% url 'login' %}" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' hx-target="#wrapper" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Logout" class="sidebar-link">
+                    <i class="bi-door-open-fill"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+        {% block content %}
+        {% endblock %}
+    </div>
+    <div id="preloader"></div>
+    <a href="" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+    <script src="{% static 'vendor/aos/aos.js' %}"></script>
+    <script src="{% static 'vendor/purecounter/purecounter_vanilla.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+    <script src="{% static 'vendor/simple-datatables/simple-datatables.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'js/toasts.js' %}"></script>
+</body>
+</html>

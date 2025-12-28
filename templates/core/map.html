@@ -1,0 +1,27 @@
+{% extends 'core/base.html' %}{% block title %}Map{% endblock %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'vendor/leaflet/plugins/leaflet.fullscreen/Control.FullScreen.css' %}" />
+<link rel="stylesheet" href="{% static 'vendor/leaflet/plugins/awesome-markers/leaflet.awesome-markers.css' %}">
+<main id="main" class="main">
+    <section class="section dashboard">
+        <div class="row">
+            <div class="col-lg-12 col-md-12">
+                <div id="toast-container" aria-live="polite" aria-atomic="true" style="position: fixed; top: 1rem; right: 1rem; z-index: 9999;"></div>
+                <div class="card info-card">
+                    <div id="map-info-card" class="card-body">
+                        <h5 id="map-card-title" class="card-title"><i class="bi-geo-alt-fill"></i> Geographical map</h5>
+                        <div id="geo-map"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% include 'footer.html' %}
+    {{ incident_locations|json_script:"incident-spots" }}
+    <script src="{% static 'vendor/leaflet/plugins/leaflet.fullscreen/Control.FullScreen.js' %}"></script>
+    <script type="text/javascript" src="{% static 'vendor/leaflet/plugins/awesome-markers/leaflet.awesome-markers.js' %}"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/hosuaby/Leaflet.SmoothMarkerBouncing@v3.0.3/dist/bundle.js" crossorigin="anonymous"></script>
+    <script src="{% static 'js/map.js' %}"></script>
+</main>
+{% endblock %}

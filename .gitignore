@@ -1,0 +1,14 @@
+# virtual environment
+*venv
+
+# files
+*env
+
+# dataset file
+*.csv
+*xlsx
+
+*__pycache__
+
+*migrations
+
